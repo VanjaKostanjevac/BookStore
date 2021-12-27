@@ -1,27 +1,27 @@
 <Query Kind="Program">
-  <Reference Relative="..\bin\Autofac.dll">..\bin\Autofac.dll</Reference>
-  <Reference Relative="..\bin\EntityFramework.dll">..\bin\EntityFramework.dll</Reference>
-  <Reference Relative="..\bin\EntityFramework.SqlServer.dll">..\bin\EntityFramework.SqlServer.dll</Reference>
-  <Reference Relative="..\bin\Bookstore.Service.dll">..\bin\Bookstore.Service.dll</Reference>
-  <Reference Relative="..\bin\Generated\ServerDom.Orm.dll">..\bin\Generated\ServerDom.Orm.dll</Reference>
-  <Reference Relative="..\bin\Generated\ServerDom.Repositories.dll">..\bin\Generated\ServerDom.Repositories.dll</Reference>
-  <Reference Relative="..\bin\NLog.dll">..\bin\NLog.dll</Reference>
-  <Reference Relative="..\bin\Oracle.ManagedDataAccess.dll">..\bin\Oracle.ManagedDataAccess.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.AspNetFormsAuth.dll">..\bin\Rhetos.AspNetFormsAuth.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Dom.DefaultConcepts.dll">..\bin\Rhetos.Dom.DefaultConcepts.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Dom.DefaultConcepts.Interfaces.dll">..\bin\Rhetos.Dom.DefaultConcepts.Interfaces.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Dsl.DefaultConcepts.dll">..\bin\Rhetos.Dsl.DefaultConcepts.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Processing.DefaultCommands.Interfaces.dll">..\bin\Rhetos.Processing.DefaultCommands.Interfaces.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Configuration.Autofac.dll">..\bin\Rhetos.Configuration.Autofac.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Dom.Interfaces.dll">..\bin\Rhetos.Dom.Interfaces.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Dsl.Interfaces.dll">..\bin\Rhetos.Dsl.Interfaces.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Interfaces.dll">..\bin\Rhetos.Interfaces.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Logging.Interfaces.dll">..\bin\Rhetos.Logging.Interfaces.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Persistence.Interfaces.dll">..\bin\Rhetos.Persistence.Interfaces.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Processing.Interfaces.dll">..\bin\Rhetos.Processing.Interfaces.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Security.Interfaces.dll">..\bin\Rhetos.Security.Interfaces.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.TestCommon.dll">..\bin\Rhetos.TestCommon.dll</Reference>
-  <Reference Relative="..\bin\Rhetos.Utilities.dll">..\bin\Rhetos.Utilities.dll</Reference>
+  <Reference Relative="..\bin\Autofac.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Autofac.dll</Reference>
+  <Reference Relative="..\bin\EntityFramework.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\EntityFramework.dll</Reference>
+  <Reference Relative="..\bin\EntityFramework.SqlServer.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\EntityFramework.SqlServer.dll</Reference>
+  <Reference Relative="..\bin\Bookstore.Service.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Bookstore.Service.dll</Reference>
+  <Reference>..\bin\Generated\ServerDom.Orm.dll</Reference>
+  <Reference>..\bin\Generated\ServerDom.Repositories.dll</Reference>
+  <Reference Relative="..\bin\NLog.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\NLog.dll</Reference>
+  <Reference Relative="..\bin\Oracle.ManagedDataAccess.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Oracle.ManagedDataAccess.dll</Reference>
+  <Reference>..\bin\Rhetos.AspNetFormsAuth.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Dom.DefaultConcepts.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Dom.DefaultConcepts.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Dom.DefaultConcepts.Interfaces.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Dom.DefaultConcepts.Interfaces.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Dsl.DefaultConcepts.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Dsl.DefaultConcepts.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Processing.DefaultCommands.Interfaces.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Processing.DefaultCommands.Interfaces.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Configuration.Autofac.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Configuration.Autofac.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Dom.Interfaces.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Dom.Interfaces.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Dsl.Interfaces.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Dsl.Interfaces.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Interfaces.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Interfaces.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Logging.Interfaces.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Logging.Interfaces.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Persistence.Interfaces.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Persistence.Interfaces.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Processing.Interfaces.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Processing.Interfaces.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Security.Interfaces.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Security.Interfaces.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.TestCommon.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.TestCommon.dll</Reference>
+  <Reference Relative="..\bin\Rhetos.Utilities.dll">C:\Users\vkostanjevac\Desktop\Day1-Rhetos\Bookstore\Bookstore.Service\bin\Rhetos.Utilities.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.DirectoryServices.AccountManagement.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.DirectoryServices.dll</Reference>
   <Reference>&lt;RuntimeDirectory&gt;\System.Runtime.Serialization.dll</Reference>
@@ -61,28 +61,96 @@ void Main()
     {
         var context = scope.Resolve<Common.ExecutionContext>();
         var repository = context.Repository;
+		
+		//Load Data
+		
+		var allBooks = repository.Bookstore.Book.Load();
+		allBooks.Dump();
 
-        // Query data from the `Common.Claim` table:
-        
-        var claims = repository.Common.Claim.Query()
-            .Where(c => c.ClaimResource.StartsWith("Common.") && c.ClaimRight == "New")
-            .ToSimple(); // Removes ORM navigation properties from the loaded objects.
-            
-        claims.ToString().Dump("Common.Claims SQL query");
-        claims.Dump("Common.Claims items");
-        
-        // Add and remove a `Common.Principal`:
-        
-        var testUser = new Common.Principal { Name = "Test123", ID = Guid.NewGuid() };
-        repository.Common.Principal.Insert(new[] { testUser });
-        repository.Common.Principal.Delete(new[] { testUser });
-        
-        // Print logged events for the `Common.Principal`:
-        
-        repository.Common.LogReader.Query()
-            .Where(log => log.TableName == "Common.Principal" && log.ItemId == testUser.ID)
-            .ToList()
-            .Dump("Common.Principal log");
+		var someBooks = repository.Bookstore.Book.Load(book => book.Title.StartsWith("The"));
+		someBooks.Dump();
+		
+
+		//Load data assignment
+		
+		var Books = repository.Bookstore.Book.Load();
+		
+		List<string> BooksAndAuthors = new List<string>();
+		
+		foreach (var book in Books)
+		{
+		var persons = repository.Bookstore.Person.Load(x => x.ID == book.AuthorID );
+		persons.Dump("Persons");
+		}
+
+
+		//Action concept assignment
+		
+		var actionParameter = new Bookstore.InsertManyBooks
+		{
+			NumberOfBooks = 7,
+			TitlePrefix = "A Song of Ice and Fire"
+		};
+		repository.Bookstore.InsertManyBooks.Execute(actionParameter);
+
+
+		//Query assignment
+		
+		var queryAssignment = repository.Bookstore.Book.Query();
+
+		var queryAssignment2 = queryAssignment.Select(a => new {a.NumberOfPages, a.Author.Name} ); 
+		queryAssignment2.Dump("Query assignment");
+		
+		
+		//Query assignment ToString()
+		
+		var items2 = queryAssignment2.ToString();
+		items2.Dump("ToString() method to print SQL query");
+		
+		
+		//Query Data
+		
+		var query = repository.Bookstore.Book.Query();
+
+		var query2 = query
+		    .Where(b => b.Title.StartsWith("B"))
+		    .Select(b => new { b.Title, b.Author.Name });
+
+
+		//ComposableFilterBy LongBooks
+
+		var filterParameter = new Bookstore.LongBooks();
+		var queryLongBooks = repository.Bookstore.Book.Query(filterParameter);
+		queryLongBooks.ToString().Dump("ComposableFilterBy"); // Print the SQL query.
+		queryLongBooks.ToSimple().Dump("ComposableFilterBy"); // Load and print the books.
+
+		
+		//FilterBy 
+		
+		
+		
+		
+		// Entity Framework overrides ToString to return the generated SQL query.
+		
+		query.ToString().Dump("Generated SQL (query)");
+		query2.ToString().Dump("Generated SQL (query2)");
+
+
+		// ToList will force Entity Framework to load the data from the database.
+		var items = query2.ToList();
+		items.Dump();
+		
+		var query3 = repository.Common.Claim.Query()
+		.Where(c => c.ClaimResource.StartsWith("Common.") && c.ClaimRight == "New");
+
+		query3.ToString().Dump("Claims query SQL");
+		query3.ToList().Dump("Claims query items"); // With navigation properties.
+
+		query3.ToSimple().ToString().Dump("Claims ToSimple SQL"); // Same as above.
+		query3.ToSimple().ToList().Dump("Claims ToSimple items"); // Without navigation properties.
+		
+		
+		//Query Data
             
         Console.WriteLine("Done.");
 		

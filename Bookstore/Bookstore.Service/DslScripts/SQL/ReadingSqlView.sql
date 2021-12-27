@@ -1,0 +1,1 @@
+﻿SELECT p.Name FROM Bookstore.ActivePersons23 p;

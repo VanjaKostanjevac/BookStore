@@ -1,82 +1,243 @@
 ﻿Module Bookstore
 {
-    Entity Book
-    {
+    Entity Book{
+
         ShortString Code { Unique; Required; }
         ShortString Title { Required; }
         Integer NumberOfPages;
         Reference Author Bookstore.Person;
+
+        ItemFilter  CommonMisspeling 'item => item.Title.Contains("Curiosity")'; 
+        InvalidData CommonMisspeling 'You can not insert the book with title Curiosity!';
+
+
+      ComposableFilterBy LongBooks '(query, repository, parameter) =>
+            {
+                return query.Where(item => item.NumberOfPages >= 500);
+            }';
+
+      FilterBy ComplexSearch '(repository, parameter ) => {
+        
+          var query = repository.Bookstore.Book.Query(item => item.NumberOfPages >= parameter.MinimumPages);
+          if(parameter.ForeignBooksOnly == true)
+            query = query.Where(item => item.Extension_ForeignBook.ID != null);
+          Book[] books = query.ToSimple().ToArray();
+
+          if( parameter.MaskTitles == true)
+            foreach(var book in books.Where(b => !string.IsNullOrEmpty(b.Title)))
+                book.Title = book.Title.First() + "***" + book.Title.Last();
+
+          return books;
+      
+      }';
+
+      }
+
+       Entity Disposal
+    {
+        Reference Book { Required; }
+        LongString Explanation { Required; }
+        DateTime EffectiveSince { CreationTime; }
+
+        ItemFilter ImportantBookExplanation 'item => item.Book.Title.Contains("important") && item.Explanation.Length < 50';
+        InvalidData ImportantBookExplanation 'When disposing an important book, the explanation should be at least 50 characters long.';
+
+        ItemFilter HighRating 'item => item.Book.Extension_BookRating.Rating > 100';
+        InvalidData HighRating 'You are not allowed to dispose a book with rating above 100.';
+
     }
 
-    Entity Person
+    Entity BookRating
     {
+        Extends Bookstore.Book;
+        Decimal Rating; 
+    }
+
+
+    Parameter LongBooks;
+
+    Parameter ComplexSearch
+    {
+        Integer MinimumPages;
+        Bool ForeignBooksOnly;
+        Bool MaskTitles;
+    }
+
+
+    Entity Person{
+        ShortString Code { AutoCode; }
         ShortString Name;
+        DateTime Creation_time { CreationTime; }
+        Logging { AllProperties; }
+        Deactivatable;
+        
     }
 
-    Entity Comment
-    {
+
+    Entity Comment{
+
         Reference Book { Detail; }
         LongString Text;
+        DateTime Date_of_entry { DenyUserEdit; DefaultValue 'item=> DateTime.Now.Date'; }
     }
+
 
     Entity Employee{
+
         ShortString name;
-        Integer VatNumber {Unique;}
+        Integer VatNumber { Unique; }
+        Integer TestPeriod;
+        
     }
 
-    Entity ChildrensBook
-{
-    Extends Bookstore.Book;
 
-    Integer AgeFrom;
-    Integer AgeTo;
+    Entity ChildrensBook{
+
+    Extends Bookstore.Book;
+    Integer AgeFrom {MinValue 6; MaxValue 15;}
+    Integer AgeTo { MinValue 6; MaxValue 15; }
     IntegerRange AgeFrom AgeTo; // A simple validation.
 }
 
-Entity ForeignBook
-{
+
+Entity ForeignBook{
+
     Extends Bookstore.Book;
     ShortString OriginalLanguage;
     Reference Translator Bookstore.Person;
 }
 
-Entity Topic
 
-{
+Entity Topic{
+
     ShortString Name { Unique; Required; }
+    ItemFilter ContainsRequiredMark 'item => item.Name.Contains("Required")';
+    Lock ContainsRequiredMark 'Name contains required mark.';
 }
 
-Entity BookTopic
-{
+
+Entity BookTopic{
+
     Reference Book { Detail; }
     Reference Topic { Required; }
     UniqueMultiple 'Book Topic';
 }
 
+
 Entity Departments{
-        
-        ShortString Code{ Unique; }
+
+        ShortString Code { Unique; }
         LongString Description;
     }
 
+
  Entity EducationRecords{
+
         Date Date;
         ShortString Description;
         Reference Employee {Detail;}
         }
 
- Entity Manager{
-    Extends Bookstore.Employee;
 
+ Entity Manager{
+
+    Extends Bookstore.Employee;
     ShortString InformationOnBonuses;
  }
 
 
  Entity EmployeeDepartment{
-    
-    Reference Employee { Detail; }
-    Reference Departments { Detail; }
 
-    
+    Reference Employee { Detail; }
+    Reference Departments { Detail; }  
  }
+
+ Browse BookGrid Bookstore.Book
+{
+    Take Code;
+    Take Title;
+    Take 'Author.Name';
+    Take TranslatorName 'Extension_ForeignBook.Translator.Name';
+    Take NumberOfComments 'Extension_BookInfo.NumberOfComments';
 }
+
+SqlQueryable BookInfo <SQL\BookInfo.sql>
+{
+    Extends Bookstore.Book;
+    Integer NumberOfComments;
+
+    AutodetectSqlDependencies;
+}
+
+SqlQueryable BookInfo2 <SQL\BookInfo2.sql>
+{
+    Extends Bookstore.Book;
+    Integer NumberOfTopics;
+
+    AutodetectSqlDependencies;
+}
+
+Browse BookGrid2 Bookstore.Book
+{
+    Take Title;
+    Take 'Author.Name';
+    Take NumberOfTopics 'Extension_BookInfo2.NumberOfTopics';
+}
+
+   Hardcoded Genre
+{
+    ShortString Label; // Short text displayed to user.
+    LongString Description;
+    Bool IsFiction;
+
+    Entry ScienceFiction
+    {
+        Value Label 'Science fiction';
+        Value Description 'A speculative fiction with imagined elements that are inspired by natural sciences or social sciences.';
+        Value IsFiction 1;
+    }
+
+    Entry Biography
+    {
+        Value Label 'Biography';
+        Value Description 'A written narrative of a persons life.';
+        Value IsFiction 0;
+    }
+}
+
+
+      Action InsertManyBooks
+        '(parameter, repository, userInfo) =>
+        {
+            for (int i = 0; i < parameter.NumberOfBooks; i++)
+            {
+                string newTitle = parameter.TitlePrefix + " - " + (i + 1);
+                var newBook = new Bookstore.Book { Code = $"{i+100}", Title = newTitle };
+                repository.Bookstore.Book.Insert(newBook);
+            }
+        }'
+    {
+        Integer NumberOfBooks;
+        ShortString TitlePrefix;
+    }
+
+   
+    SqlView ActivePersons23 <SQL\ActivePersons.sql>
+    {
+    
+      AutodetectSqlDependencies;
+    }
+
+
+    SqlQueryable UsingFromSqlViewActivePersons <SQl\ReadingSqlView.sql>{
+      Extends Bookstore.Person;
+      ShortString Name;
+      AutodetectSqlDependencies;
+    }
+        
+         
+
+
+
+}
+

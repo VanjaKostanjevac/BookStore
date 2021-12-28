@@ -1,0 +1,4 @@
+i - http://localhost:62578/rest/Bookstore/Book/ - All records from an entity
+ii - http://localhost:62578/rest/Bookstore/Book?filters=[{"Filter":"Bookstore.CommonMisspeling"}] - ItemFilter Applied
+iii - http://localhost:62578/rest/Bookstore/Book/?filters=[{"Filter":"Bookstore.LongBooks3","Value":{"MinimumPages":600}}] - ComposableFilterBy with a parameter
+iv - http://localhost:62578/rest/Bookstore/Book/?filters=[{"Property":"Title","Operation":"StartsWith","Value":"T"}] -  Generic property filter

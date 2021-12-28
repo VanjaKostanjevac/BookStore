@@ -2,7 +2,7 @@
 {
     Entity Book{
 
-        ShortString Code { Unique; Required; }
+        ShortString Code { Unique; Required; AutoCode; }
         ShortString Title { Required; }
         Integer NumberOfPages;
         Reference Author Bookstore.Person;
@@ -11,9 +11,12 @@
         InvalidData CommonMisspeling 'You can not insert the book with title Curiosity!';
 
 
-      ComposableFilterBy LongBooks '(query, repository, parameter) =>
+     ComposableFilterBy LongBooks3 '(query, repository, parameter) =>
             {
-                return query.Where(item => item.NumberOfPages >= 500);
+                var filtered = query.Where(item => item.NumberOfPages >= parameter.MinimumPages);
+                if (parameter.ForeignBooksOnly == true)
+                    filtered = filtered.Where(item => item.Extension_ForeignBook.ID != null);
+                return filtered;
             }';
 
       FilterBy ComplexSearch '(repository, parameter ) => {
@@ -31,6 +34,12 @@
       
       }';
 
+      }
+
+
+      Parameter LongBooks3{
+      Integer MinimumPages;
+      Bool ForeignBooksOnly;
       }
 
        Entity Disposal
@@ -51,6 +60,7 @@
     {
         Extends Bookstore.Book;
         Decimal Rating; 
+        DateTime ModifiedRating {ModificationTimeOf Bookstore.BookRating.Rating; }
     }
 
 
@@ -122,6 +132,24 @@ Entity BookTopic{
     Reference Topic { Required; }
     UniqueMultiple 'Book Topic';
 }
+
+Entity Review{
+Reference Book{Required;}
+Integer Score {Required; MinValue 1; MaxValue 5;}
+LongString Text;
+
+SaveMethod{
+ LoadOldItems
+        {
+            Take Score;
+            Take 'Book.Title';
+        }
+    
+}
+
+}
+
+
 
 
 Entity Departments{

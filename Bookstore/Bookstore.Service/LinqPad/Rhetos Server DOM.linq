@@ -56,36 +56,52 @@ void Main()
 {
 	string applicationFolder = Path.GetDirectoryName(Util.CurrentQueryPath);
 	ConsoleLogger.MinLevel = EventType.Info; // Use EventType.Trace for more detailed log.
-	
+
 	using (var scope = ProcessContainer.CreateScope(applicationFolder))
-    {
-        var context = scope.Resolve<Common.ExecutionContext>();
-        var repository = context.Repository;
-		
+	{
+		var context = scope.Resolve<Common.ExecutionContext>();
+		var repository = context.Repository;
+
 		//Load Data
-		
+
 		var allBooks = repository.Bookstore.Book.Load();
 		allBooks.Dump();
 
 		var someBooks = repository.Bookstore.Book.Load(book => book.Title.StartsWith("The"));
 		someBooks.Dump();
-		
 
-		//Load data assignment
-		
+		// Day 2
+		// Load() assignment
+
 		var Books = repository.Bookstore.Book.Load();
-		
+
 		List<string> BooksAndAuthors = new List<string>();
-		
+
 		foreach (var book in Books)
 		{
-		var persons = repository.Bookstore.Person.Load(x => x.ID == book.AuthorID );
-		persons.Dump("Persons");
+			var persons = repository.Bookstore.Person.Load(x => x.ID == book.AuthorID);
+
 		}
 
 
+		//Query assignment
+
+		var queryAssignment = repository.Bookstore.Book.Query();
+
+		var queryAssignment2 = queryAssignment.Select(a => new { a.NumberOfPages, a.Author.Name });
+
+		queryAssignment2.Dump("Query assignment");
+
+
+		//Query assignment .ToString()
+
+		var items2 = queryAssignment2.ToString();
+
+		items2.Dump("ToString() method to print SQL query");
+
+
 		//Action concept assignment
-		
+
 		var actionParameter = new Bookstore.InsertManyBooks
 		{
 			NumberOfBooks = 7,
@@ -94,42 +110,81 @@ void Main()
 		repository.Bookstore.InsertManyBooks.Execute(actionParameter);
 
 
-		//Query assignment
-		
-		var queryAssignment = repository.Bookstore.Book.Query();
-
-		var queryAssignment2 = queryAssignment.Select(a => new {a.NumberOfPages, a.Author.Name} ); 
-		queryAssignment2.Dump("Query assignment");
-		
-		
-		//Query assignment ToString()
-		
-		var items2 = queryAssignment2.ToString();
-		items2.Dump("ToString() method to print SQL query");
-		
-		
+		// Day 3
 		//Query Data
-		
+
 		var query = repository.Bookstore.Book.Query();
 
 		var query2 = query
-		    .Where(b => b.Title.StartsWith("B"))
-		    .Select(b => new { b.Title, b.Author.Name });
+			.Where(b => b.Title.StartsWith("B"))
+			.Select(b => new { b.Title, b.Author.Name });
+
+
+		//ItemFilter
+
+		var parameter = new Bookstore.CommonMisspeling();
+
+		var queryItemFilter = repository.Bookstore.Book.Query(parameter);
+
+		queryItemFilter.ToString().Dump("ItemFilter - SQL query");
+
+		queryItemFilter.ToSimple().Dump("ItemFilter");
 
 
 		//ComposableFilterBy LongBooks
 
-		var filterParameter = new Bookstore.LongBooks();
-		var queryLongBooks = repository.Bookstore.Book.Query(filterParameter);
-		queryLongBooks.ToString().Dump("ComposableFilterBy"); // Print the SQL query.
-		queryLongBooks.ToSimple().Dump("ComposableFilterBy"); // Load and print the books.
+		var filterParameter = new Bookstore.LongBooks3();
 
-		
+		var queryLongBooks3 = repository.Bookstore.Book.Query(filterParameter);
+
+		queryLongBooks3.ToString().Dump("ComposableFilterBy - SQL query");
+
+		queryLongBooks3.ToSimple().Dump("ComposableFilterBy");
+
+
+		//Predefined filters
+
+		//FilterAll
+		var parameterFilterAll = new Rhetos.Dom.DefaultConcepts.FilterAll();
+
+		var queryFilterAll = repository.Bookstore.Book.Query(parameterFilterAll);
+
+		queryFilterAll.ToString().Dump("Predefined FilterAll() - SQL query");
+
+		queryFilterAll.ToSimple().Dump("Predefined FilterAll");
+
+		//GUID
+		Guid id = new Guid("9AAE53C7-BB6F-4750-A95D-399CB1E35DCB");
+
+		repository.Bookstore.Book.Load(new[] { id }).Single().Dump("Predefined filter GUID");
+
+		//Generic property filter
+		var filter1 = new FilterCriteria("Title", "StartsWith", "N");
+
+		repository.Bookstore.Book.Query(filter1).Dump("Predefined generic property filter");
+
+		//IEnumerable of generic filters
+		var filter2 = new FilterCriteria("Title", "Contains", "Naslov");
+
+		var manyFilters = new[] { filter1, filter2 };
+
+		var filtered = repository.Bookstore.Book.Query(manyFilters);
+
+		filtered.ToString().Dump("IEnumerable of generic filters - SQL query");
+		filtered.ToSimple().Dump("IEnumerable of generic filters");
+
 		//FilterBy 
+		var filterParameter2 = new Bookstore.ComplexSearch();
+		filterParameter2.ForeignBooksOnly=true;
+		filterParameter2.MaskTitles=true;
+		filterParameter2.MinimumPages=50;
+
+		var queryLongBooks32 = repository.Bookstore.Book.Load(filterParameter2);
 		
-		
-		
-		
+		queryLongBooks32.Dump("Complex");
+
+
+
 		// Entity Framework overrides ToString to return the generated SQL query.
 		
 		query.ToString().Dump("Generated SQL (query)");
@@ -150,7 +205,7 @@ void Main()
 		query3.ToSimple().ToList().Dump("Claims ToSimple items"); // Without navigation properties.
 		
 		
-		//Query Data
+		
             
         Console.WriteLine("Done.");
 		

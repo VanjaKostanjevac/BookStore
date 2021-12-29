@@ -67,7 +67,6 @@
     <Content Include="DslScripts\SQL\BookInfo.sql" />
     <Content Include="DslScripts\SQL\BookInfo2.sql" />
     <Content Include="DslScripts\SQL\ReadingSqlView.sql" />
-    <Content Include="DslScripts\SQL\test.sql" />
     <Content Include="Global.asax" />
     <Content Include="RhetosService.svc" />
     <Content Include="Service1.svc" />
@@ -114,6 +113,12 @@
     <PackageReference Include="Rhetos.Wcf">
       <Version>4.3.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bookstore.Concepts\Bookstore.Concepts.csproj">
+      <Project>{0ca275de-347a-4c0e-921f-5dd4115f25f3}</Project>
+      <Name>Bookstore.Concepts</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

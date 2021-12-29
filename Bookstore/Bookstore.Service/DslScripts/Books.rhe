@@ -6,6 +6,21 @@
         ShortString Title { Required; }
         Integer NumberOfPages;
         Reference Author Bookstore.Person;
+        DateTime LastModifiedTime;
+
+        SaveMethod{
+            Initialization UpdatingLastModifiedTime '
+                foreach ( var item in insertedNew ){
+                if(item.LastModifiedTime==null)
+                    item.LastModifiedTime=DateTime.Now;
+                
+                }
+            ';
+        
+        }
+
+       
+
 
         ItemFilter  CommonMisspeling 'item => item.Title.Contains("Curiosity")'; 
         InvalidData CommonMisspeling 'You can not insert the book with title Curiosity!';
@@ -156,6 +171,7 @@ Entity Departments{
 
         ShortString Code { Unique; }
         LongString Description;
+        DateTime LastModifiedTimeOf{LastModifiedTime;}
     }
 
 

@@ -20,6 +20,7 @@ namespace Rhetos.Dsl.DefaultConcepts
     {
         [ConceptKey]
         public DateTimePropertyInfo Property { get; set; }
+                
     }
 }
 

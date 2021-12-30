@@ -1,7 +1,8 @@
 ﻿Module Bookstore
 {
     Entity Book{
-
+         
+        
         ShortString Code { Unique; Required; AutoCode; }
         ShortString Title { Required; }
         Integer NumberOfPages;
@@ -18,6 +19,8 @@
             ';
         
         }
+
+        
 
        
 
@@ -50,6 +53,8 @@
       }';
 
       }
+
+     
 
 
       Parameter LongBooks3{
@@ -162,6 +167,12 @@ SaveMethod{
     
 }
 
+}
+
+Entity Test{
+
+    CodeTable; 
+    Integer broj;
 }
 
 

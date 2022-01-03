@@ -1,6 +1,7 @@
 ﻿Module Bookstore
 {
-    Entity Book{
+    Entity Book
+    {
          
         
         ShortString Code { Unique; Required; AutoCode; }
@@ -8,28 +9,26 @@
         Integer NumberOfPages;
         Reference Author Bookstore.Person;
         DateTime LastModifiedTime;
+        MonitorRecord;
 
-        SaveMethod{
-            Initialization UpdatingLastModifiedTime '
-                foreach ( var item in insertedNew ){
+        SaveMethod
+        {
+            Initialization UpdatingLastModifiedTime 
+            '
+                foreach ( var item in insertedNew )
+                {
                 if(item.LastModifiedTime==null)
                     item.LastModifiedTime=DateTime.Now;
                 
-                }
+                } 
             ';
-        
-        }
-
-        
-
-       
-
+       }
 
         ItemFilter  CommonMisspeling 'item => item.Title.Contains("Curiosity")'; 
         InvalidData CommonMisspeling 'You can not insert the book with title Curiosity!';
 
 
-     ComposableFilterBy LongBooks3 '(query, repository, parameter) =>
+        ComposableFilterBy LongBooks3 '(query, repository, parameter) =>
             {
                 var filtered = query.Where(item => item.NumberOfPages >= parameter.MinimumPages);
                 if (parameter.ForeignBooksOnly == true)
@@ -37,11 +36,13 @@
                 return filtered;
             }';
 
-      FilterBy ComplexSearch '(repository, parameter ) => {
+
+       FilterBy ComplexSearch '(repository, parameter ) => 
+       {
         
           var query = repository.Bookstore.Book.Query(item => item.NumberOfPages >= parameter.MinimumPages);
           if(parameter.ForeignBooksOnly == true)
-            query = query.Where(item => item.Extension_ForeignBook.ID != null);
+          query = query.Where(item => item.Extension_ForeignBook.ID != null);
           Book[] books = query.ToSimple().ToArray();
 
           if( parameter.MaskTitles == true)
@@ -50,31 +51,40 @@
 
           return books;
       
-      }';
+       }';
 
       }
 
-     
+//Entity Book <--------------------------------------------------------------------------------------------------------------------------------->
 
 
-      Parameter LongBooks3{
-      Integer MinimumPages;
-      Bool ForeignBooksOnly;
-      }
+        Entity TestMonitorRecord {
+        
+        MonitorRecord;
+        
+        }
+
+
+
+      Parameter LongBooks3
+       {
+           Integer MinimumPages;
+           Bool ForeignBooksOnly;
+       }
 
        Entity Disposal
-    {
-        Reference Book { Required; }
-        LongString Explanation { Required; }
-        DateTime EffectiveSince { CreationTime; }
+        {
+            Reference Book { Required; }
+            LongString Explanation { Required; }
+            DateTime EffectiveSince { CreationTime; }
 
-        ItemFilter ImportantBookExplanation 'item => item.Book.Title.Contains("important") && item.Explanation.Length < 50';
-        InvalidData ImportantBookExplanation 'When disposing an important book, the explanation should be at least 50 characters long.';
+            ItemFilter ImportantBookExplanation 'item => item.Book.Title.Contains("important") && item.Explanation.Length < 50';
+            InvalidData ImportantBookExplanation 'When disposing an important book, the explanation should be at least 50 characters long.';
 
-        ItemFilter HighRating 'item => item.Book.Extension_BookRating.Rating > 100';
-        InvalidData HighRating 'You are not allowed to dispose a book with rating above 100.';
+            ItemFilter HighRating 'item => item.Book.Extension_BookRating.Rating > 100';
+            InvalidData HighRating 'You are not allowed to dispose a book with rating above 100.';
 
-    }
+         }
 
     Entity BookRating
     {
@@ -102,6 +112,12 @@
         Deactivatable;
         
     }
+
+
+      Entity Test2{
+      
+      CodeTable;
+      }
 
 
     Entity Comment{
@@ -169,11 +185,7 @@ SaveMethod{
 
 }
 
-Entity Test{
 
-    CodeTable; 
-    Integer broj;
-}
 
 
 
@@ -289,6 +301,158 @@ Browse BookGrid2 Bookstore.Book
       ShortString Name;
       AutodetectSqlDependencies;
     }
+
+
+
+
+
+
+
+    Polymorphic SalesItem{
+        ShortString Code;
+        Money Price;
+    }
+
+    Entity Food {
+        ShortString Calories;
+        ShortString Code{Unique;}
+        Money Price;
+
+        Is Bookstore.SalesItem;
+
+        
+    
+    }
+
+    Entity Food2 {
+        ShortString Calories;
+        ShortString Code{Unique;}
+        Money Price;
+
+        Is Bookstore.SalesItem{
+        Where 'Price != null';
+        }
+
+        
+    
+    }
+
+    Entity BookTestPolymorphic{
+        Integer NumberOfPages;
+        ShortString Code{Unique;}
+        Money Price;
+
+        Is Bookstore.SalesItem;
+    
+    }
+
+    Entity Shipment
+    {
+        ShortString TargetAddress;
+        DateTime DeliveryDate;
+        DateTime CreatedAt { CreationTime; }
+
+        Is Bookstore.ShipmentEvent 'Creating'
+        {
+            Implements Bookstore.ShipmentEvent.EffectiveSince "CreatedAt";
+            Implements Bookstore.ShipmentEvent.Shipment "ID";
+            Implements Bookstore.ShipmentEvent.NewStatus Bookstore.ShipmentStatus.Preparing;
+            
+        }
+    }
+
+    Entity ShipmentItem
+    {
+        Reference Shipment { Detail; }
+        Reference Book;
+    }
+
+    Browse ShipmentGrid Bookstore.Shipment
+    {
+        Take TargetAddress;
+        Take DeliveryDate;
+        Take CurrentStatus 'Extension_ShipmentCurrentState.Status.Name';
+    }
+
+     Polymorphic ShipmentEvent
+    {
+        DateTime EffectiveSince;
+        Reference Shipment;
+        Reference NewStatus Bookstore.ShipmentStatus;
+    }
+
+    Entity ApproveShipment
+    {
+        DateTime EffectiveSince { CreationTime; }
+        Reference Shipment;
+
+        LongString Explanation { Required; }
+
+        Is Bookstore.ShipmentEvent
+        {
+            Implements Bookstore.ShipmentEvent.NewStatus Bookstore.ShipmentStatus.Approved;
+        }
+    }
+
+    Entity DeliveryStarted
+    {
+        DateTime EffectiveSince { CreationTime; }
+        Reference Shipment;
+
+        Is Bookstore.ShipmentEvent
+        {            
+            Implements Bookstore.ShipmentEvent.NewStatus Bookstore.ShipmentStatus.DeliveryInProgress;
+        }
+    }
+
+    Entity DeliveryFinished
+    {
+        DateTime EffectiveSince { CreationTime; }
+        Reference Shipment;
+
+        Is Bookstore.ShipmentEvent
+        {            
+            Implements Bookstore.ShipmentEvent.NewStatus Bookstore.ShipmentStatus.Delivered;
+        }
+    }
+
+     Hardcoded ShipmentStatus
+    {
+        Entry Preparing;
+        Entry Approved;
+        Entry DeliveryInProgress;
+        Entry Delivered;
+    }
+
+    SqlQueryable ComputeShipmentCurrentState <SQL\ComputeShipmentCurrentState.sql>
+    {
+        Extends Bookstore.Shipment;
+        Reference Status Bookstore.ShipmentStatus; 
+
+        ChangesOnLinkedItems Bookstore.ApproveShipment.Shipment;
+        ChangesOnLinkedItems Bookstore.DeliveryStarted.Shipment;
+        ChangesOnLinkedItems Bookstore.DeliveryFinished.Shipment;
+
+        AutodetectSqlDependencies;
+    }
+
+    Entity ShipmentCurrentState
+    {
+        ComputedFrom Bookstore.ComputeShipmentCurrentState
+        {
+            KeepSynchronized;
+            AllProperties;
+        }
+    }
+
+
+
+
+
+
+
+
+    
         
          
 

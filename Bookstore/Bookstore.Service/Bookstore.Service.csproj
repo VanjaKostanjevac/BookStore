@@ -66,6 +66,7 @@
     <Content Include="DslScripts\SQL\ActivePersons.sql" />
     <Content Include="DslScripts\SQL\BookInfo.sql" />
     <Content Include="DslScripts\SQL\BookInfo2.sql" />
+    <Content Include="DslScripts\SQL\ComputeShipmentCurrentState.sql" />
     <Content Include="DslScripts\SQL\ReadingSqlView.sql" />
     <Content Include="Global.asax" />
     <Content Include="RhetosService.svc" />

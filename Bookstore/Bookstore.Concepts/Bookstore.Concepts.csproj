@@ -41,10 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
-    <Compile Include="Class2.cs" />
-    <Compile Include="Interface1.cs" />
-    <Compile Include="MacroConceptCodeTable.cs" />
+    <Compile Include="LastModifiedTimeInfo.cs" />
+    <Compile Include="CodeTableMacro.cs" />
+    <Compile Include="LastModifiedTimeCodeGenerator.cs" />
+    <Compile Include="CodeTableInfo.cs" />
+    <Compile Include="MonitorRecordInfo.cs" />
+    <Compile Include="MonitorRecordMacro.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -17,29 +17,22 @@ namespace Bookstore.Concepts
         {
             var newConcepts = new List<IConceptInfo>();
 
-            ShortStringPropertyInfo code = new ShortStringPropertyInfo
-            {
-                DataStructure = conceptInfo.Entity,
-                Name = "Code"
-            };
+            ShortStringPropertyInfo code = new ShortStringPropertyInfo{ DataStructure = conceptInfo.Entity, Name = "Code" };
             newConcepts.Add(code);
-
-            newConcepts.Add(new AutoCodePropertyInfo  // Effect is same as adding "RegExMatch" validation on this property in DSL script.
+            newConcepts.Add(new AutoCodePropertyInfo  
             {
                 Property = code
 
-
-            }) ;
+            });
 
             ShortStringPropertyInfo name = new ShortStringPropertyInfo { DataStructure = conceptInfo.Entity, Name = "Name" };
             newConcepts.Add(name);
             newConcepts.Add(new RequiredPropertyInfo
             {
                 Property = name
-            }) ;
+            });
 
             return newConcepts;
         }
     }
 }
-

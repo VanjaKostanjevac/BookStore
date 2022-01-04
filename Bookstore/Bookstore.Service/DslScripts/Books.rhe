@@ -1,32 +1,28 @@
 ﻿Module Bookstore
-{
-    Entity Book
     {
-         
-        
-        ShortString Code { Unique; Required; AutoCode; }
-        ShortString Title { Required; }
-        Integer NumberOfPages;
-        Reference Author Bookstore.Person;
-        DateTime LastModifiedTime;
-        MonitorRecord;
+    Entity Book
+        {
+  
+            ShortString Code { Unique; Required; AutoCode; }
+            ShortString Title { Required; }
+            Integer NumberOfPages;
+            Reference Author Bookstore.Person;
+            DateTime LastModifiedTime;
+            MonitorRecord;
 
         SaveMethod
         {
             Initialization UpdatingLastModifiedTime 
-            '
-                foreach ( var item in insertedNew )
-                {
-                if(item.LastModifiedTime==null)
-                    item.LastModifiedTime=DateTime.Now;
-                
-                } 
-            ';
-       }
+            
+                'foreach ( var item in insertedNew )
+                    {
+                    if(item.LastModifiedTime==null)
+                        item.LastModifiedTime=DateTime.Now;
+                    }';
+        }
 
         ItemFilter  CommonMisspeling 'item => item.Title.Contains("Curiosity")'; 
         InvalidData CommonMisspeling 'You can not insert the book with title Curiosity!';
-
 
         ComposableFilterBy LongBooks3 '(query, repository, parameter) =>
             {
@@ -34,55 +30,51 @@
                 if (parameter.ForeignBooksOnly == true)
                     filtered = filtered.Where(item => item.Extension_ForeignBook.ID != null);
                 return filtered;
-            }';
+             }';
 
-
-       FilterBy ComplexSearch '(repository, parameter ) => 
-       {
+        FilterBy ComplexSearch '(repository, parameter ) => 
+            {
         
-          var query = repository.Bookstore.Book.Query(item => item.NumberOfPages >= parameter.MinimumPages);
-          if(parameter.ForeignBooksOnly == true)
-          query = query.Where(item => item.Extension_ForeignBook.ID != null);
-          Book[] books = query.ToSimple().ToArray();
+              var query = repository.Bookstore.Book.Query(item => item.NumberOfPages >= parameter.MinimumPages);
+              if(parameter.ForeignBooksOnly == true)
+              query = query.Where(item => item.Extension_ForeignBook.ID != null);
+              Book[] books = query.ToSimple().ToArray();
 
-          if( parameter.MaskTitles == true)
-            foreach(var book in books.Where(b => !string.IsNullOrEmpty(b.Title)))
-                book.Title = book.Title.First() + "***" + book.Title.Last();
+              if( parameter.MaskTitles == true)
+                foreach(var book in books.Where(b => !string.IsNullOrEmpty(b.Title)))
+                    book.Title = book.Title.First() + "***" + book.Title.Last();
 
-          return books;
-      
-       }';
+             return books;
+             }';
 
       }
 
 //Entity Book <--------------------------------------------------------------------------------------------------------------------------------->
 
 
-        Entity TestMonitorRecord {
-        
-        MonitorRecord;
-        
-        }
-
-
+      Entity TestMonitorRecord 
+       {
+         MonitorRecord;
+       }
 
       Parameter LongBooks3
        {
-           Integer MinimumPages;
-           Bool ForeignBooksOnly;
+         Integer MinimumPages;
+         Bool ForeignBooksOnly;
        }
 
        Entity Disposal
         {
-            Reference Book { Required; }
-            LongString Explanation { Required; }
-            DateTime EffectiveSince { CreationTime; }
 
-            ItemFilter ImportantBookExplanation 'item => item.Book.Title.Contains("important") && item.Explanation.Length < 50';
-            InvalidData ImportantBookExplanation 'When disposing an important book, the explanation should be at least 50 characters long.';
+          Reference Book { Required; }
+          LongString Explanation { Required; }
+          DateTime EffectiveSince { CreationTime; }
 
-            ItemFilter HighRating 'item => item.Book.Extension_BookRating.Rating > 100';
-            InvalidData HighRating 'You are not allowed to dispose a book with rating above 100.';
+          ItemFilter ImportantBookExplanation 'item => item.Book.Title.Contains("important") && item.Explanation.Length < 50';
+          InvalidData ImportantBookExplanation 'When disposing an important book, the explanation should be at least 50 characters long.';
+
+          ItemFilter HighRating 'item => item.Book.Extension_BookRating.Rating > 100';
+          InvalidData HighRating 'You are not allowed to dispose a book with rating above 100.';
 
          }
 
@@ -330,7 +322,7 @@ Browse BookGrid2 Bookstore.Book
         Money Price;
 
         Is Bookstore.SalesItem{
-        Where 'Price != null';
+        Where 'Price > 0';
         }
 
         
@@ -445,16 +437,84 @@ Browse BookGrid2 Bookstore.Book
         }
     }
 
+        SqlQueryable ComputeBookInfo
+        "
+            SELECT
+                b.ID,
+                NumberOfComments = COUNT(bc.ID)
+            FROM
+                Bookstore.Book b
+                LEFT JOIN Bookstore.Comment bc ON bc.BookID = b.ID
+            GROUP BY
+                b.ID
+        "
+    {
+        Extends Bookstore.Book;
+        Integer NumberOfComments;
+
+        ChangesOnLinkedItems Bookstore.Comment.Book;
+    }
+
+    Entity BookInfo3
+    {
+        ComputedFrom Bookstore.ComputeBookInfo
+        {
+            AllProperties;
+            KeepSynchronized;
+        }
+    }
 
 
 
+}
 
+Module Warehouse{
+	
+	Polymorphic ChangeInWarehouse{
+		ShortString Goods;
+		ShortString Warehouse;
+		Integer Amount;
+	}
 
+	Entity ReceivingGoods{
+		ShortString Goods;
+		ShortString Warehouse;
+		Integer Amount;
 
+		Is Warehouse.ChangeInWarehouse 'Zbroji'{
+            Implements Warehouse.ChangeInWarehouse.Amount '+Amount';
+        }
+	}
 
+	Entity OutputOfGoods{
+		ShortString Goods;
+		ShortString Warehouse;
+		Integer Amount;
+
+		Is Warehouse.ChangeInWarehouse 'Oduzmi'{
+            Implements Warehouse.ChangeInWarehouse.Amount '-Amount';
+        }
+	}
     
-        
-         
+    Entity RelocatingGoods {
+        ShortString Goods;
+        ShortString WarehouseFrom;
+        ShortString WarehouseTo;
+        Integer Amount;
+
+          Is Warehouse.ChangeInWarehouse 'RelocatingFrom'
+            {
+                 Implements Warehouse.ChangeInWarehouse.Warehouse 'WarehouseFrom';
+                 Implements Warehouse.ChangeInWarehouse.Amount '-Amount';
+            }
+          Is Warehouse.ChangeInWarehouse 'RelocatingTo'{
+                 Implements Warehouse.ChangeInWarehouse.Warehouse 'WarehouseTo';
+                 Implements Warehouse.ChangeInWarehouse.Amount 'Amount';
+          
+          
+          }
+    
+    }
 
 
 

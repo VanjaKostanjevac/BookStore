@@ -49,6 +49,25 @@
 
       }
 
+       SqlQueryable ComputeBookInfo <SQL\BookInfo.sql>
+    {
+        Extends Bookstore.Book;
+        Integer NumberOfComments;
+
+        ChangesOnLinkedItems Bookstore.Comment.Book;
+    }
+
+    Entity BookInfo3
+    {
+        ComputedFrom Bookstore.ComputeBookInfo
+        {
+            AllProperties;
+            KeepSynchronized;
+        }
+    }
+
+
+
 //Entity Book <--------------------------------------------------------------------------------------------------------------------------------->
 
 
@@ -78,12 +97,7 @@
 
          }
 
-    Entity BookRating
-    {
-        Extends Bookstore.Book;
-        Decimal Rating; 
-        DateTime ModifiedRating {ModificationTimeOf Bookstore.BookRating.Rating; }
-    }
+    
 
 
     Parameter LongBooks;
@@ -178,10 +192,6 @@ SaveMethod{
 }
 
 
-
-
-
-
 Entity Departments{
 
         ShortString Code { Unique; }
@@ -264,7 +274,6 @@ Browse BookGrid2 Bookstore.Book
     }
 }
 
-
       Action InsertManyBooks
         '(parameter, repository, userInfo) =>
         {
@@ -293,12 +302,6 @@ Browse BookGrid2 Bookstore.Book
       ShortString Name;
       AutodetectSqlDependencies;
     }
-
-
-
-
-
-
 
     Polymorphic SalesItem{
         ShortString Code;
@@ -437,84 +440,13 @@ Browse BookGrid2 Bookstore.Book
         }
     }
 
-        SqlQueryable ComputeBookInfo
-        "
-            SELECT
-                b.ID,
-                NumberOfComments = COUNT(bc.ID)
-            FROM
-                Bookstore.Book b
-                LEFT JOIN Bookstore.Comment bc ON bc.BookID = b.ID
-            GROUP BY
-                b.ID
-        "
-    {
-        Extends Bookstore.Book;
-        Integer NumberOfComments;
-
-        ChangesOnLinkedItems Bookstore.Comment.Book;
-    }
-
-    Entity BookInfo3
-    {
-        ComputedFrom Bookstore.ComputeBookInfo
-        {
-            AllProperties;
-            KeepSynchronized;
-        }
-    }
+       
 
 
 
-}
 
-Module Warehouse{
-	
-	Polymorphic ChangeInWarehouse{
-		ShortString Goods;
-		ShortString Warehouse;
-		Integer Amount;
-	}
 
-	Entity ReceivingGoods{
-		ShortString Goods;
-		ShortString Warehouse;
-		Integer Amount;
 
-		Is Warehouse.ChangeInWarehouse 'Zbroji'{
-            Implements Warehouse.ChangeInWarehouse.Amount '+Amount';
-        }
-	}
-
-	Entity OutputOfGoods{
-		ShortString Goods;
-		ShortString Warehouse;
-		Integer Amount;
-
-		Is Warehouse.ChangeInWarehouse 'Oduzmi'{
-            Implements Warehouse.ChangeInWarehouse.Amount '-Amount';
-        }
-	}
-    
-    Entity RelocatingGoods {
-        ShortString Goods;
-        ShortString WarehouseFrom;
-        ShortString WarehouseTo;
-        Integer Amount;
-
-          Is Warehouse.ChangeInWarehouse 'RelocatingFrom'
-            {
-                 Implements Warehouse.ChangeInWarehouse.Warehouse 'WarehouseFrom';
-                 Implements Warehouse.ChangeInWarehouse.Amount '-Amount';
-            }
-          Is Warehouse.ChangeInWarehouse 'RelocatingTo'{
-                 Implements Warehouse.ChangeInWarehouse.Warehouse 'WarehouseTo';
-                 Implements Warehouse.ChangeInWarehouse.Amount 'Amount';
-          
-          
-          }
-    
-    }
 
 
 

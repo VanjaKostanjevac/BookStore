@@ -1,0 +1,9 @@
+﻿Module Bookstore  {
+
+Entity BookRating
+    {
+        Extends Bookstore.Book;
+        Decimal Rating; 
+        DateTime ModifiedRating {ModificationTimeOf Bookstore.BookRating.Rating; }
+    }
+}

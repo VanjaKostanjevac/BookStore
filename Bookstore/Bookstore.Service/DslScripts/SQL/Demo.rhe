@@ -1,0 +1,6 @@
+﻿Module Demo {
+	Entity E{
+	Shortstring B;
+	}
+
+}

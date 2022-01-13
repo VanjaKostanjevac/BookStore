@@ -4,25 +4,16 @@
         {
   
             ShortString Code { Unique; Required; AutoCode; }
-            ShortString Title { Required; }
+            ShortString Title;
             Integer NumberOfPages;
             Reference Author Bookstore.Person;
             DateTime LastModifiedTime;
             MonitorRecord;
 
-        SaveMethod
-        {
-            Initialization UpdatingLastModifiedTime 
-            
-                'foreach ( var item in insertedNew )
-                    {
-                    if(item.LastModifiedTime==null)
-                        item.LastModifiedTime=DateTime.Now;
-                    }';
-        }
+       
 
-        ItemFilter  CommonMisspeling 'item => item.Title.Contains("Curiosity")'; 
-        InvalidData CommonMisspeling 'You can not insert the book with title Curiosity!';
+        ItemFilter  CommonMisspelling 'item => item.Title.Contains("Curiosity")'; 
+        InvalidData CommonMisspelling 'You can not insert the book with title Curiosity!';
 
         ComposableFilterBy LongBooks3 '(query, repository, parameter) =>
             {
@@ -180,14 +171,7 @@ Reference Book{Required;}
 Integer Score {Required; MinValue 1; MaxValue 5;}
 LongString Text;
 
-SaveMethod{
- LoadOldItems
-        {
-            Take Score;
-            Take 'Book.Title';
-        }
-    
-}
+
 
 }
 

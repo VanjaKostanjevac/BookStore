@@ -1,10 +1,10 @@
 ﻿using Autofac;
 using Rhetos;
 using Rhetos.Logging;
-using Rhetos.Security;
 using Rhetos.Utilities;
 using System;
 using System.IO;
+using System.Threading;
 
 namespace Bookstore.Service.Test.Tools
 {
@@ -26,23 +26,33 @@ namespace Bookstore.Service.Test.Tools
         public static UnitOfWorkScope Create(Action<ContainerBuilder> registerCustomComponents = null)
         {
             ConsoleLogger.MinLevel = EventType.Info; // Use EventType.Trace for more detailed log.
-            return _rhetosHost.CreateScope(registerCustomComponents);
+            return _container.CreateScope(registerCustomComponents);
         }
 
         /// <summary>
         /// Reusing a single shared static DI container between tests, to reduce initialization time for each test.
         /// Each test should create a child scope with <see cref="TestScope.Create"/> method to start a 'using' block.
         /// </summary>
-        private static readonly RhetosHost _rhetosHost = RhetosHost.CreateFrom(Path.GetFullPath(@"..\..\..\..\..\src\Bookstore.Service\bin\Debug\net5.0\Bookstore.Service.dll"), ConfigureRhetosHostBuilder);
+        private static readonly ProcessContainer _container = new ProcessContainer(FindBookstoreServiceFolder());
 
-        private static void ConfigureRhetosHostBuilder(IRhetosHostBuilder rhetosHostBuilder)
+        /// <summary>
+        /// Unit tests can be executed at different disk locations depending on whether they are run at the solution or project level, from Visual Studio or another utility.
+        /// Therefore, instead of providing a simple relative path, this method searches for the main application location.
+        /// </summary>
+        private static string FindBookstoreServiceFolder()
         {
-            rhetosHostBuilder.ConfigureContainer(builder =>
+            var startingFolder = new DirectoryInfo(Environment.CurrentDirectory);
+            string rhetosServerSubfolder = @"..\..\..\Bookstore.Service";
+
+            var folder = startingFolder;
+            while (!Directory.Exists(Path.Combine(folder.FullName, rhetosServerSubfolder)))
             {
-                // Configuring standard Rhetos system services to work with unit tests:
-                builder.RegisterType<ProcessUserInfo>().As<IUserInfo>();
-                builder.RegisterType<ConsoleLogProvider>().As<ILogProvider>();
-            });
+                if (folder.Parent == null)
+                    throw new ArgumentException($"Cannot find the Rhetos server folder '{rhetosServerSubfolder}' in '{startingFolder}' or any of its parent folders.");
+                folder = folder.Parent;
+            }
+
+            return Path.Combine(folder.FullName, rhetosServerSubfolder);
         }
     }
 }
